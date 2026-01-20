@@ -62,17 +62,26 @@ function renderQuestions() {
       radio.name = `question-${i}`;
       radio.value = choice;
 
+      // ✅ Restore checked state (HTML + JS)
       if (userAnswers[i] === choice) {
         radio.checked = true;
+        radio.setAttribute("checked", "true");
       }
 
-      radio.addEventListener("change", () =>
-        handleAnswerSelection(i, choice)
-      );
+      radio.addEventListener("change", () => {
+        // remove checked attribute from siblings
+        document
+          .querySelectorAll(`input[name="question-${i}"]`)
+          .forEach(r => r.removeAttribute("checked"));
+
+        radio.checked = true;
+        radio.setAttribute("checked", "true");
+
+        handleAnswerSelection(i, choice);
+      });
 
       label.appendChild(radio);
       label.append(` ${choice}`);
-
       questionDiv.appendChild(label);
       questionDiv.appendChild(document.createElement("br"));
     });
@@ -80,6 +89,7 @@ function renderQuestions() {
     questionsElement.appendChild(questionDiv);
   });
 }
+
 
 renderQuestions();
 
